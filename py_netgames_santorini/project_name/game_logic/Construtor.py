@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Dominio_problema import Jogador
-from Dominio_problema import Entidade
+from Jogador import Jogador
+from Entidade import Entidade
 from typing import List
 
 class Construtor(Entidade):  # Substituir Entidade pela classe pai apropriada

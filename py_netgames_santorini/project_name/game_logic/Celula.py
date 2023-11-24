@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Dominio_problema import Jogador
-from Dominio_problema import Tabuleiro
-from Dominio_problema import Construtor
-from Dominio_problema import Entidade
+from Jogador import Jogador
+from Tabuleiro import Tabuleiro
+from Construtor import Construtor
+from  Entidade import Entidade
 from typing import List
 
 class Celula(Entidade):  # Substituir Entidade pela classe pai apropriada

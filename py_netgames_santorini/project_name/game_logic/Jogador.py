@@ -1,11 +1,11 @@
 class Jogador:
-    def __init__(self):
+    def __init__(self, aNome, simbolo):
         self._turno = False
-        self._construtores = list  # Substituir None pelo tipo apropriado
+        self._construtores = list
         self._vencedor = False
         self._perdedor = False
-        self._simbolo = int
-        self._nome = ""
+        self._simbolo = simbolo
+        self._nome = aNome
 
     def habilitar(self):
         self._turno = True

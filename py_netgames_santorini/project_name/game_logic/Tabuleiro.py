@@ -1,11 +1,11 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Dominio_problema import Celula
-from Dominio_problema import Jogador
-from Dominio_problema import AtorJogador
-from Dominio_problema import BoardImage
-from Dominio_problema import Movimento
-from Dominio_problema import Construtor
+from Celula import Celula
+from Jogador import Jogador
+from AtorJogador import AtorJogador
+from BoardImage import BoardImage
+from Movimento import Movimento
+from Construtor import Construtor
 from typing import List
 
 #	Board matchStatus
@@ -17,17 +17,14 @@ from typing import List
 
 class Tabuleiro:
     def __init__(self):
-        self.matriz = None  # Substituir None pelo tipo apropriado
-        self.jogadores = None  # Substituir None pelo tipo apropriado
-        self.estado_jogada = 0
-        self.status_partida = 0
-        self._vencedor = None  # Substituir None pelo tipo apropriado
+        self._matriz = [[Celula() for _ in range(5)] for _ in range(5)]
+        self._jogadores = [Jogador("Jogador local", 1), Jogador("Jogador remoto", 2)] 
+        self._estado_jogada = 0
+        self._status_partida = 0
+        self._vencedor = None 
 
-    # Implementações dos métodos (os corpos dos métodos estão vazios, precisam ser preenchidos)
 
-    def tabuleiro(self):
-        pass
-
+   
     def click(self, linha, coluna):
         pass
 
@@ -43,11 +40,12 @@ class Tabuleiro:
     def get_estado(self):
         pass
 
+    # Getters e Setters
     def get_status(self):
-        return self.status_partida
+        return self._status_partida
 
     def set_status(self, status):
-        self.status_partida = status
+        self._status_partida = status
 
     def get_celula(self, aMove):
         pass
@@ -59,10 +57,10 @@ class Tabuleiro:
         pass
 
     def get_estado_jogada(self):
-        return self.estado_jogada
+        return self._estado_jogada
 
     def set_estado_jogada(self, estado_jogada):
-        self.estado_jogada = estado_jogada
+        self._estado_jogada = estado_jogada
 
     def inicio_de_jogo(self, celula_selecionada):
         pass
@@ -87,4 +85,3 @@ class Tabuleiro:
 
     def set_vencedor(self, vencedor):
         self._vencedor = vencedor
-

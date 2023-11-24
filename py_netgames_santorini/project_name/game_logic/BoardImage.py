@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Dominio_problema import Tabuleiro
+from Tabuleiro import Tabuleiro
 from typing import List
 
 class BoardImage(object):
