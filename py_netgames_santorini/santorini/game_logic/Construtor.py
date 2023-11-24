@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Jogador import Jogador
-from Entidade import Entidade
-from typing import List
+from .Jogador import Jogador
+from .Entidade import Entidade
 
 class Construtor(Entidade):  # Substituir Entidade pela classe pai apropriada
     def __init__(self):

@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-from Celula import Celula
-from Jogador import Jogador
-from AtorJogador import AtorJogador
-from BoardImage import BoardImage
-from Movimento import Movimento
-from Construtor import Construtor
-from typing import List
+from .Celula import Celula
+from .Jogador import Jogador
+from .BoardImage import BoardImage
+from .Movimento import Movimento
+from .Construtor import Construtor   
 
 #	Board matchStatus
 # 1 - match not started (initial message)
