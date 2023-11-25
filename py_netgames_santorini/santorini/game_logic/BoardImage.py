@@ -7,7 +7,7 @@ class BoardImage:
             line = []
             for x in range(5):
                 line.append(0)
-            self.map.append(line)
+            self._map.append(line)
 
     def get_message(self):
         return self._message
@@ -16,10 +16,10 @@ class BoardImage:
         self._message = message
 
     def get_value(self, linha, coluna):
-        return self.map[(linha-1)][(coluna-1)]
+        return self._map[(linha-1)][(coluna-1)]
 
-    def set_value(self, linha, coluna, z, value):
-        self.map[(linha-1)][(coluna-1)] = (z, value)
+    def set_value(self, linha, coluna, z : int, value : int):
+        self._map[(linha-1)][(coluna-1)] = [z, value]
 
     # Getter para status_partida
     def get_status_partida(self):

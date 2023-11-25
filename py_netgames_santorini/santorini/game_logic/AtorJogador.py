@@ -44,6 +44,10 @@ class AtorJogador(PyNetgamesServerListener):
             self.mainFrame.grid_columnconfigure(i, weight=1)
             self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
             self.grass_image = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
+            self.andar1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png'))
+            self.andar2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png'))
+            self.andar3 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar3.png'))
+            self.andar4 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png'))
         
         self.boardView = []
         for i in range(5):
@@ -86,19 +90,30 @@ class AtorJogador(PyNetgamesServerListener):
             messagebox.showinfo(message='Você não está habilitado para jogar')
 
 
-    def atualizar_interface_usuario(self, novo_estado):
+    def atualizar_interface_usuario(self, novo_estado : BoardImage):
         self.labelMessage['text']=novo_estado.get_message()
         for x in range(5):
             for y in range(5):
                 label = self.boardView[x][y]
-                value = novo_estado.getValue(x+1, y+1)
-                if value==0:
-                    label['imag'] = self.empty
-                elif value==1:
-                    label['imag'] = self.red
-                elif value==2:
-                    label['imag'] = self.white 
-
+                dados_cel = novo_estado.get_value(x+1, y+1)
+                if dados_cel[1]==0: # n ocupado
+                    if dados_cel[0] == 0:
+                        label['imag'] = self.grass_image
+                    elif dados_cel[0] == 1:
+                        label['imag'] = self.andar1
+                    elif dados_cel[0] == 2:
+                        label['imag'] = self.andar2
+                    elif dados_cel[0] == 3:
+                        label['imag'] = self.andar3
+                    elif dados_cel[0] == 4:
+                        label['imag'] = self.andar4
+                    
+                elif dados_cel[1]==1: #ocupado jog1
+                    pass
+                    
+                elif dados_cel[1]==2: #ocupado jog2
+                    pass
+                    
     def get_partida_id(self):
         return self._partida_id
 

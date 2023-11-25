@@ -15,7 +15,14 @@ from .Construtor import Construtor
 
 class Tabuleiro:
     def __init__(self):
-        self._matriz = [[Celula() for _ in range(5)] for _ in range(5)]
+        self._matriz = []
+        for x in range(5):
+            linha = []
+            for y in range(5):
+                celula = Celula()
+                celula.set_coordenada_xyz([x, y, 0])
+                linha.append(celula)
+            self._matriz.append(linha)
         self._jogadores = [Jogador("Jogador local", 1), Jogador("Jogador remoto", 2)] 
         self._estado_jogada = 0
         self._status_partida = 0
@@ -33,9 +40,14 @@ class Tabuleiro:
         pass
 
     def resetar(self):
+        self._matriz = []
         for x in range(5):
+            linha = []
             for y in range(5):
-                self._matriz[x][y]=Celula()
+                celula = Celula()
+                celula.set_coordenada_xyz([x, y, 0])
+                linha.append(celula)
+            self._matriz.append(linha)
         self._jogadores[0].resetar()
         self._jogadores[1].resetar()
         self.set_status(0)
@@ -55,10 +67,12 @@ class Tabuleiro:
             estado.set_message((self.get_vencedor()).get_nome() + " venceu a partida")
         for x in range(3):
             for y in range(3):
-                if (self.matriz[x][y].ocupado()):
-                    value = (self.matriz[x][y].get_ocupante()).get_simbolo()		
+                cel = self._matriz[x][y]
+                if (cel.ocupado()):
+                    value = (cel.get_ocupante()).get_simbolo()	
                 else:
                     value = 0
+                z = cel.get_coordenada_xyz()[2]
                 estado.set_value((x+1), (y+1),z, value)
         return estado
 
