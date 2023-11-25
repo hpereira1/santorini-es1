@@ -2,12 +2,7 @@ class BoardImage:
     def __init__(self):
         self._status_partida = 0
         self._message = ""  
-        self._map = []
-        for y in range(5):
-            line = []
-            for x in range(5):
-                line.append(0)
-            self._map.append(line)
+        self._map = [[[0, 0] for _ in range(5)] for _ in range(5)]
 
     def get_message(self):
         return self._message
@@ -16,10 +11,11 @@ class BoardImage:
         self._message = message
 
     def get_value(self, linha, coluna):
-        return self._map[(linha-1)][(coluna-1)]
-
+        valor = self._map[linha - 1][coluna - 1]
+        # print(f"Valor em get_value({linha}, {coluna}): {valor}")  # Para depuração
+        return valor
     def set_value(self, linha, coluna, z : int, value : int):
-        self._map[(linha-1)][(coluna-1)] = [z, value]
+        self._map[linha-1][coluna-1] = [z, value]
 
     # Getter para status_partida
     def get_status_partida(self):

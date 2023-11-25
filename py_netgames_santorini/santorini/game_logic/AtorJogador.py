@@ -37,18 +37,21 @@ class AtorJogador(PyNetgamesServerListener):
         # self.messageFrame.grid(row=1, column=0, sticky="ew")
         # self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
         # self.grass_image2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
-        
+        self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
+        self.grass_image = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
+        self.andar1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png'))
+        self.andar2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png'))
+        self.andar3 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar3.png'))
+        self.andar4 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png'))
+        self.j1g2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/J1g2.png'))
+        self.j2g2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/J2g2.png'))
+    
+
         self.boardView = []
         for i in range(5):
             self.mainFrame.grid_rowconfigure(i, weight=1)
             self.mainFrame.grid_columnconfigure(i, weight=1)
-            self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
-            self.grass_image = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
-            self.andar1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png'))
-            self.andar2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png'))
-            self.andar3 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar3.png'))
-            self.andar4 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png'))
-        
+
         self.boardView = []
         for i in range(5):
             row = []
@@ -79,6 +82,7 @@ class AtorJogador(PyNetgamesServerListener):
 
     
     def click(self, event, linha, coluna):
+        print(self.get_local_habilitado())
         if (self.get_local_habilitado()):
             jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
             novo_estado = self.meuTabuleiro.get_estado()
@@ -91,28 +95,45 @@ class AtorJogador(PyNetgamesServerListener):
 
 
     def atualizar_interface_usuario(self, novo_estado : BoardImage):
+        if not isinstance(novo_estado, BoardImage):
+            raise TypeError("novo_estado deve ser uma instância de BoardImage")
         self.labelMessage['text']=novo_estado.get_message()
         for x in range(5):
             for y in range(5):
                 label = self.boardView[x][y]
                 dados_cel = novo_estado.get_value(x+1, y+1)
-                if dados_cel[1]==0: # n ocupado
+                if not isinstance(dados_cel, list) or len(dados_cel) != 2:
+                    raise ValueError("dados_cel deve ser uma lista com dois elementos")
+                if dados_cel[1] == 0:  # não ocupado
                     if dados_cel[0] == 0:
-                        label['imag'] = self.grass_image
+                        label.config(image=self.grass_image)
                     elif dados_cel[0] == 1:
-                        label['imag'] = self.andar1
+                        label.config(image=self.andar2)
                     elif dados_cel[0] == 2:
-                        label['imag'] = self.andar2
+                        label.config(image=self.andar2)
                     elif dados_cel[0] == 3:
-                        label['imag'] = self.andar3
+                        label.config(image=self.andar3)
                     elif dados_cel[0] == 4:
-                        label['imag'] = self.andar4
+                        label.config(image=self.andar4)
+                # if dados_cel[1]==0: # n ocupado
+                #     if dados_cel[0] == 0:
+                #         label['image'] = self.grass_image
+                #     elif dados_cel[0] == 1:
+                #         label['image'] = self.andar1
+                #     elif dados_cel[0] == 2:
+                #         label['image'] = self.andar2
+                #     elif dados_cel[0] == 3:
+                #         label['image'] = self.andar3
+                #     elif dados_cel[0] == 4:
+                #         label['image'] = self.andar4
                     
                 elif dados_cel[1]==1: #ocupado jog1
-                    pass
+                    if dados_cel[0] == 0:
+                        label.config(image=self.j1g2)
                     
                 elif dados_cel[1]==2: #ocupado jog2
-                    pass
+                    if dados_cel[0] == 0:
+                        label.config(image=self.j2g2)
                     
     def get_partida_id(self):
         return self._partida_id
@@ -143,11 +164,12 @@ class AtorJogador(PyNetgamesServerListener):
 
     def receive_move(self, move):
         received_move = move.payload
+        print(received_move)
         self.meuTabuleiro.click(int(received_move['linha']), int(received_move['coluna']))
         novo_estado = self.meuTabuleiro.get_estado()
         self.atualizar_interface_usuario(novo_estado)
-        if (novo_estado.get_() == 2):
-            self.enable_interface()
+        if (novo_estado.get_status_partida() == 1):
+            self.habilitar_interface()
 
     def add_listener(self):
         self.server_proxy = PyNetgamesServerProxy()
