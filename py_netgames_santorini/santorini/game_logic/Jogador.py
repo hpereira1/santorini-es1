@@ -17,8 +17,6 @@ class Jogador:
         self._vencedor = False
         self._perdedor = False
         self._turno = False
-        self._simbolo = 0
-
 
     def get_vencedor(self):
         return self._vencedor

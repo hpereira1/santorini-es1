@@ -13,9 +13,9 @@ class Celula(Entidade):  # Substituir Entidade pela classe pai apropriada
         self._ocupante = None
 
     def ocupado(self):
-        return self._ocupante is not None
+        return (self._ocupante != None)
 
-    def set_ocupante(self, construtor):
+    def set_ocupante(self, construtor :Construtor):
         self._ocupante = construtor
 
     def get_ocupante(self):

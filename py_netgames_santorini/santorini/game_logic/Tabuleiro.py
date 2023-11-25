@@ -33,10 +33,34 @@ class Tabuleiro:
         pass
 
     def resetar(self):
-        pass
+        for x in range(5):
+            for y in range(5):
+                self._matriz[x][y]=Celula()
+        self._jogadores[0].resetar()
+        self._jogadores[1].resetar()
+        self.set_status(0)
 
     def get_estado(self):
-        pass
+        estado = BoardImage()
+        estado.set_status_partida(self.get_status())
+        if (self.get_status() == 0): 
+            estado.set_message("Aguardando início de partida")
+        elif (self.get_status() == 1):
+            estado.set_message("fase inicial: " + (self.get_jogador_habilitado()).get_nome() + " deve jogar")	
+        elif (self.get_status() == 2): 
+            estado.set_message((self.get_jogador_habilitado()).get_nome() + " deve jogar")
+        elif (self.get_status() == 3): 
+            estado.setMessage("jogada irregular - jogue novamente")
+        elif (self.get_status() == 4): 
+            estado.set_message((self.get_vencedor()).get_nome() + " venceu a partida")
+        for x in range(3):
+            for y in range(3):
+                if (self.matriz[x][y].ocupado()):
+                    value = (self.matriz[x][y].get_ocupante()).get_simbolo()		
+                else:
+                    value = 0
+                estado.set_value((x+1), (y+1),z, value)
+        return estado
 
     # Getters e Setters
     def get_status(self):
@@ -79,7 +103,13 @@ class Tabuleiro:
         pass
 
     def get_vencedor(self):
-        return self._vencedor
+        if (self._jogadores[0].get_vencedor()):
+            return self._jogadores[0]
+        else:
+            if (self._jogadores[1].get_vencedor()):
+                return self._jogadores[1]
+            else:
+                return None	
 
     def set_vencedor(self, vencedor):
         self._vencedor = vencedor

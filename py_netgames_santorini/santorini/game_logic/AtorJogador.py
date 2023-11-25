@@ -17,34 +17,51 @@ class AtorJogador(PyNetgamesServerListener):
         self._turno_local = False
         self._partida_id = ""
 
-        self.mainJanela.resizable(False, False)
         self.mainJanela.geometry("800x600")
+        self.mainJanela.resizable(False, False)
+        self.mainJanela.grid_rowconfigure(0, weight=1)
+        self.mainJanela.grid_columnconfigure(0, weight=1)
         
-        self.mainFrame = Frame(self.mainJanela, padx=44, pady=40, bg="gray")
-        self.messageFrame = Frame(self.mainJanela, padx=4, pady=4, bg="gray")
+        self.mainFrame = Frame(self.mainJanela, bg="gray")
+        self.mainFrame.grid(row=0, column=0, sticky="nsew", padx=44, pady=40)
+        
+        self.messageFrame = Frame(self.mainJanela, bg="gray")
+        self.messageFrame.grid(row=1, column=0, sticky="ew", padx=4, pady=4)
 
+        # self.mainFrame = Frame(self.mainJanela, padx=44, pady=40, bg="gray")
+        # self.messageFrame = Frame(self.mainJanela, padx=4, pady=4, bg="gray")
 
-        self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
-        self.grass_image2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
+        # self.mainFrame.grid(row=0 , column=0)
+        # self.messageFrame.grid(row=1 , column=0) 
+        # self.mainFrame.grid(row=0, column=0, sticky="nsew")
+        # self.messageFrame.grid(row=1, column=0, sticky="ew")
+        # self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
+        # self.grass_image2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
         
         self.boardView = []
         for i in range(5):
             self.mainFrame.grid_rowconfigure(i, weight=1)
+            self.mainFrame.grid_columnconfigure(i, weight=1)
+            self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
+            self.grass_image = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
+        
+        self.boardView = []
+        for i in range(5):
             row = []
             for j in range(5):
-                self.mainFrame.grid_columnconfigure(j, weight=1)
-                grass_image = self.grass_image1 if (i + j) % 2 == 0 else self.grass_image2
-                label = Label(self.mainFrame, image=grass_image)
-                label.image = grass_image
+                # grass_image = self.grass_image1 if (i + j) % 2 == 0 else self.grass_image2
+                label = Label(self.mainFrame, image=self.grass_image, bd = 2, relief="solid")
+                label.image = self.grass_image
                 label.grid(row=i, column=j, sticky='news')
                 label.bind('<Button-1>', lambda event, i=i, j=j: self.click(event, i, j))
                 row.append(label)
             self.boardView.append(row)
 
-        self.labelMessage = Label(self.messageFrame, bg="gray", text='Aguardando início de partida', font="arial 14")
-        self.labelMessage.grid(row=0, column=0, columnspan=3)
-        self.mainFrame.grid(row=0 , column=0)
-        self.messageFrame.grid(row=1 , column=0) 
+        self.labelMessage = Label(self.messageFrame, text='Aguardando início de partida', font="arial 14")
+        self.labelMessage.pack(fill="x")
+        # self.labelMessage = Label(self.messageFrame, bg="gray", text='Aguardando início de partida', font="arial 14")
+        # self.labelMessage.grid(row=0, column=0, columnspan=3)
+
 
         self.meuTabuleiro = Tabuleiro()
         self.desabilitar_interface()
@@ -55,17 +72,32 @@ class AtorJogador(PyNetgamesServerListener):
 
         self.mainJanela.mainloop()
         
-    @staticmethod
-    def resize_image(image_path, width, height):
-        image = Image.open(image_path)  # Abra a imagem usando o PIL
-        image = image.resize((width, height), Image.LANCZOS)  # Redimensione a imagem
-        return ImageTk.PhotoImage(image)
+
     
     def click(self, event, linha, coluna):
-        pass  # Implementação específica vai aqui
+        if (self.get_local_habilitado()):
+            jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
+            novo_estado = self.meuTabuleiro.get_estado()
+            self.atualizar_interface_usuario(novo_estado)
+            if (bool(jogada_a_enviar)):
+                self.desabilitar_interface()
+                self.server_proxy.send_move(self.get_partida_id(), jogada_a_enviar)
+        else:
+            messagebox.showinfo(message='Você não está habilitado para jogar')
+
 
     def atualizar_interface_usuario(self, novo_estado):
-        pass  # Implementação específica vai aqui
+        self.labelMessage['text']=novo_estado.get_message()
+        for x in range(5):
+            for y in range(5):
+                label = self.boardView[x][y]
+                value = novo_estado.getValue(x+1, y+1)
+                if value==0:
+                    label['imag'] = self.empty
+                elif value==1:
+                    label['imag'] = self.red
+                elif value==2:
+                    label['imag'] = self.white 
 
     def get_partida_id(self):
         return self._partida_id
@@ -95,7 +127,12 @@ class AtorJogador(PyNetgamesServerListener):
         self.enviar_conexao()	
 
     def receive_move(self, move):
-        pass  # Implementação específica vai aqui
+        received_move = move.payload
+        self.meuTabuleiro.click(int(received_move['linha']), int(received_move['coluna']))
+        novo_estado = self.meuTabuleiro.get_estado()
+        self.atualizar_interface_usuario(novo_estado)
+        if (novo_estado.get_() == 2):
+            self.enable_interface()
 
     def add_listener(self):
         self.server_proxy = PyNetgamesServerProxy()
