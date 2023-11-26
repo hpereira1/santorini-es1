@@ -57,8 +57,9 @@ class AtorJogador(PyNetgamesServerListener):
             row = []
             for j in range(5):
                 # grass_image = self.grass_image1 if (i + j) % 2 == 0 else self.grass_image2
+                # label = Label(self.mainFrame, image=self.grass_image, bd = 2, relief="solid")
                 label = Label(self.mainFrame, image=self.grass_image, bd = 2, relief="solid")
-                label.image = self.grass_image
+                # label.image = self.grass_image
                 label.grid(row=i, column=j, sticky='news')
                 label.bind('<Button-1>', lambda event, i=i, j=j: self.click(event, i, j))
                 row.append(label)
@@ -191,7 +192,7 @@ class AtorJogador(PyNetgamesServerListener):
         print('********** ORDEM: ', partida.position)
         print('********** match_id: ', partida.match_id)
         self.set_partida_id(partida.match_id)
-        if (partida.position == 1):
+        if (partida.position == 0):
             self.habilitar_interface()
         self.meuTabuleiro.start_partida(self.get_local_habilitado())
         novo_estado = self.meuTabuleiro.get_estado()

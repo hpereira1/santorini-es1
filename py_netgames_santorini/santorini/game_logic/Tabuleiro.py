@@ -58,7 +58,7 @@ class Tabuleiro:
     def processar_jogada(self, aMove : Movimento):
         celula_selecionada = self.get_celula(aMove)
         status = self.get_status()
-        if (status == 1):
+        if not (self.todos_construtores_posicionados() )or ((status == 3 and not self.todos_construtores_posicionados())):
             self.inicio_de_jogo(celula_selecionada)
         else:
             pass
@@ -165,6 +165,7 @@ class Tabuleiro:
             
             if(jogador_desabilitado.todos_builders_posicionados()):
                 self.set_status(2)
+                print(self.get_status())
                 
             
     def selecionar_construtor(self, celula_selecionada : Celula):
