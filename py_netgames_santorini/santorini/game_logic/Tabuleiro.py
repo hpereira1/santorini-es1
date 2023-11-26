@@ -23,7 +23,7 @@ class Tabuleiro:
                 celula.set_coordenada_xyz([x, y, 0])
                 linha.append(celula)
             self._matriz.append(linha)
-        self._jogadores = [Jogador("Jogador local", 1, [Construtor(), Construtor()]), Jogador("Jogador remoto", 2, [Construtor(), Construtor()])] 
+        self._jogadores = [Jogador("Jogador local", 1, [Construtor(1), Construtor(1)]), Jogador("Jogador remoto", 2, [Construtor(2), Construtor(2)])] 
         self._estado_jogada = 0
         self._status_partida = 0
         self._vencedor = None 
@@ -60,6 +60,7 @@ class Tabuleiro:
         status = self.get_status()
         if not (self.todos_construtores_posicionados() )or ((status == 3 and not self.todos_construtores_posicionados())):
             self.inicio_de_jogo(celula_selecionada)
+            self.set_status(1)
         else:
             pass
         
@@ -98,15 +99,25 @@ class Tabuleiro:
             estado.set_message((self.get_vencedor()).get_nome() + " venceu a partida")
         for x in range(5):
             for y in range(5):
+                # celula = self._matriz[x][y]
+                # z = celula.get_coordenada_xyz()[2]
+                # value = celula.get_ocupante().get_simbolo() if celula.ocupado() else 0
+                
+                # estado.set_value(x + 1, y + 1, z, value)
                 cel = self._matriz[x][y]
                 value = 0  # Inicializa value
                 z = cel.get_coordenada_xyz()[2]
+                # print(f"val z = {z}")
                 if (cel.ocupado()):
                     ocupante = cel.get_ocupante()
+                    # print(f"Celula ({x}, {y}) está ocupada pelo construtor com símbolo {ocupante.get_simbolo()}")
                     if isinstance(ocupante,Construtor):
                         value = ocupante.get_simbolo()	
+                        # print(f"val value = {value}")       
+                # else:
+                #     print(f"Celula ({x}, {y}) está vazia")
                 estado.set_value((x+1), (y+1),z, value)
-                # print(estado.get_value(x,y))
+                print(estado.get_value(x,y))
         return estado
 
     # Getters e Setters

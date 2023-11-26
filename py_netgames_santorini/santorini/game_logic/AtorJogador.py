@@ -195,6 +195,6 @@ class AtorJogador(PyNetgamesServerListener):
         if (partida.position == 0):
             self.habilitar_interface()
         self.meuTabuleiro.start_partida(self.get_local_habilitado())
-        novo_estado = self.meuTabuleiro.get_estado()
-        self.atualizar_interface_usuario(novo_estado)
+        # novo_estado = self.meuTabuleiro.get_estado()
+        # self.atualizar_interface_usuario(novo_estado)
 

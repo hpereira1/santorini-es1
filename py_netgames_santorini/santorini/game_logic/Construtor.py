@@ -4,11 +4,11 @@ from .Jogador import Jogador
 from .Entidade import Entidade
 
 class Construtor(Entidade):  # Substituir Entidade pela classe pai apropriada
-    def __init__(self):
+    def __init__(self, simbolo = 0):
         super().__init__()  # Chama o construtor da classe pai, se necessário
         self._marcado = False  # Inicializa marcado como False
         self._coordenada_xyz = [-1, -1, -1]
-        self._simbolo = 0
+        self._simbolo = simbolo
         
     def set_marcado(self, marcado):
         self._marcado = marcado
