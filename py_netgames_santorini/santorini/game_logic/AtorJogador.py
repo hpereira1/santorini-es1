@@ -127,13 +127,24 @@ class AtorJogador(PyNetgamesServerListener):
                     
                 elif dados_cel[1]==1: #ocupado jog1
                     if dados_cel[0] == 0:
-                        # label.config(image=self.j1g2)
                         label['image'] = self.j1
+                    elif dados_cel[0] == 1:
+                        label['image'] = self.a1j1
+                    elif dados_cel[0] == 2:
+                        label['image'] = self.a2j1
+                    elif dados_cel[0] == 3:
+                        label['image'] = self.a3j1
                     
                 elif dados_cel[1]==2: #ocupado jog2
                     if dados_cel[0] == 0:
-                        # label.config(image=self.j2g2)
-                        label['imag'] = self.j2
+                        label['image'] = self.j2
+                    elif dados_cel[0] == 1:
+                        label['image'] = self.a1j2
+                    elif dados_cel[0] == 2:
+                        label['image'] = self.a2j2
+                    elif dados_cel[0] == 3:
+                        label['image'] = self.a3j2
+    
                         
         self.mainJanela.update()
         
