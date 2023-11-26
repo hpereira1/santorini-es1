@@ -44,6 +44,12 @@ class AtorJogador(PyNetgamesServerListener):
         self.andar4 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png')).resize((85, 85)))
         self.j1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/J1g1.png')).resize((85, 85)))
         self.j2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/J2g1.png')).resize((85, 85)))
+        self.a1j2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a1j2.png')).resize((85, 85)))
+        self.a1j1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a1j1.png')).resize((85, 85)))
+        self.a2j1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a2j1.png')).resize((85, 85)))
+        self.a2j2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a2j2.png')).resize((85, 85)))
+        self.a3j1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a3j1.png')).resize((85, 85)))
+        self.a3j2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/a3j2.png')).resize((85, 85)))
         
     
 
@@ -104,20 +110,9 @@ class AtorJogador(PyNetgamesServerListener):
             for y in range(5):
                 label = self.boardView[x][y]
                 dados_cel = novo_estado.get_value(x, y)
-                print(f"Célula ({x}, {y}): Nível do andar = {dados_cel[0]}, Ocupação = {dados_cel[1]}")
+                # print(f"Célula ({x}, {y}): Nível do andar = {dados_cel[0]}, Ocupação = {dados_cel[1]}")
                 if not isinstance(dados_cel, list) or len(dados_cel) != 2:
                     raise ValueError("dados_cel deve ser uma lista com dois elementos")
-                # if dados_cel[1] == 0:  # não ocupado
-                #     if dados_cel[0] == 0:
-                    #     label.config(image=self.grass_image)
-                    # elif dados_cel[0] == 1:
-                    #     label.config(image=self.andar1)
-                    # elif dados_cel[0] == 2:
-                    #     label.config(image=self.andar2)
-                    # elif dados_cel[0] == 3:
-                    #     label.config(image=self.andar3)
-                    # elif dados_cel[0] == 4:
-                    #     label.config(image=self.andar4)
                 if dados_cel[1]==0: # n ocupado
                     if dados_cel[0] == 0:
                         label['image'] = self.grass_image

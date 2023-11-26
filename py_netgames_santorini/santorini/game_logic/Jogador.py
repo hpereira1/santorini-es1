@@ -27,8 +27,8 @@ class Jogador:
     def get_turno(self):
         return self._turno
 
-    def set_vencedor(self, vencedor):
-        self._vencedor = vencedor
+    def set_vencedor(self):
+        self._vencedor = True
 
     def set_perdedor(self, perdedor):
         self._perdedor = perdedor

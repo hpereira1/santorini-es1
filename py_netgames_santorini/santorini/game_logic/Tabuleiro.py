@@ -16,13 +16,7 @@ from .Construtor import Construtor
 class Tabuleiro:
     def __init__(self):
         self._matriz = []
-        for x in range(5):
-            linha = []
-            for y in range(5):
-                celula = Celula()
-                celula.set_coordenada_xyz([x, y, 0])
-                linha.append(celula)
-            self._matriz.append(linha)
+            
         self._jogadores = [Jogador("Jogador local", 1, [Construtor(1), Construtor(1)]), Jogador("Jogador remoto", 2, [Construtor(2), Construtor(2)])] 
         self._estado_jogada = 0
         self._status_partida = 0
@@ -58,16 +52,25 @@ class Tabuleiro:
     def processar_jogada(self, aMove : Movimento):
         celula_selecionada = self.get_celula(aMove)
         status = self.get_status()
+        print(f"status jogada processar jogada antes de processar{status}")
         if not (self.todos_construtores_posicionados() )or ((status == 3 and not self.todos_construtores_posicionados())):
             self.set_status(1)
             self.inicio_de_jogo(celula_selecionada)
         else:
             self.set_status(2)
+            # if(status == 4):
+            #     self.set_status(4)
+            #     return 
             estado_jogada = self.get_estado_jogada()
             if estado_jogada == 0:
-                self.selecionar_construtor(celula_selecionada)
+                builder_marcado = self.selecionar_construtor(celula_selecionada)
+                if (isinstance(builder_marcado, Construtor)):
+                    print(f"Construtor marcado if processar jogada: {builder_marcado.get_coordenada_xyz()}, {builder_marcado.get_simbolo()}, {builder_marcado.get_marcado()}")  # Debug: Imprime informações sobre o construtor marcado
+                    print(f"status jogada dps processar jogada {self.get_status()}")
+                elif(builder_marcado == None): 
+                    print(f"nao construtor processar: {builder_marcado}" )
             elif estado_jogada == 1:
-                pass
+                self.movimentar_construtor(celula_selecionada, builder_marcado)
             elif estado_jogada == 2:
                 pass
             # else:
@@ -82,6 +85,18 @@ class Tabuleiro:
             for y in range(5):
                 celula = Celula()
                 celula.set_coordenada_xyz([x, y, 0])
+                if celula.get_coordenada_xyz() == [0,2,0]:
+                    celula.set_coordenada_xyz([0,2,1])
+                elif celula.get_coordenada_xyz() == [1,2,0]:
+                    celula.set_coordenada_xyz([1,2,2])
+                elif celula.get_coordenada_xyz() == [1,3,0]:
+                    celula.set_coordenada_xyz([1,3,2])
+                elif celula.get_coordenada_xyz() == [1,4,0]:
+                    celula.set_coordenada_xyz([1,4,4])
+                elif celula.get_coordenada_xyz() == [4,3,0]:
+                    celula.set_coordenada_xyz([4,3,1])
+                elif celula.get_coordenada_xyz() == [3,0,0]:
+                    celula.set_coordenada_xyz([3,0,3])
                 linha.append(celula)
             self._matriz.append(linha)
         self._jogadores[0].resetar()
@@ -126,7 +141,7 @@ class Tabuleiro:
                 # else:
                 #     print(f"Celula ({x}, {y}) está vazia")
                 estado.set_value((x), (y),z, value)
-                print(estado.get_value(x,y))
+                print(x,y,estado.get_value(x,y))
         return estado
 
     # Getters e Setters
@@ -190,22 +205,31 @@ class Tabuleiro:
             
     def selecionar_construtor(self, celula_selecionada : Celula):
         perdedor = self.avaliar_perdedor(celula_selecionada)
+        print(f" coord cel_sel: {celula_selecionada.get_coordenada_xyz()}")
+        print(f"Verificando se há um perdedor: {perdedor}")
         if not(perdedor):
-            jogador_hab = self. get_jogador_habilitado()
+            jogador_hab = self.get_jogador_habilitado()
             ocupado = celula_selecionada.ocupado()
             builder = celula_selecionada.get_ocupante()
             aux_sel = ocupado and builder in jogador_hab.get_construtores()
+            print(f"Célula ocupada por construtor do jogador habilitado: {aux_sel}")  # Debug: Verifica se a célula está ocupada pelo construtor do jogador habilitado
             if(aux_sel):
                 teste = (not self.todas_adjacencias_invalidas(celula_selecionada)) and aux_sel
+                print(f"Célula com adjacências válidas: {teste}")  # Debug: Verifica se as adjacências são válidas
+            
                 if teste:
                     builder.set_marcado(True)
                     self.set_estado_jogada(1)
+                    print(f"estado da jogada apos builder marcado: {self.get_estado_jogada()}")
+                    print(f"Construtor marcado: {builder.get_coordenada_xyz()}, simbolo {builder.get_simbolo()}, marcado ? {builder.get_marcado()}")  # Debug: Imprime informações sobre o construtor marcado
                     return builder
                 else:
                     self.set_status(3)
+                    print("Status definido como jogada irregular if teste (3)")  # Debug: Indica que a jogada foi irregular
                     return
             else:
                 self.set_status(3)
+                print("Status definido como jogada irregular if aux_cel (3)")  # Debug: Indica que a jogada foi irregular
                 return
             
     def construir(self, celula_selecionada : Celula):
@@ -220,9 +244,15 @@ class Tabuleiro:
     def avaliar_perdedor(self, celula_selecionada : Celula):
         estado_jogada = self.get_estado_jogada()
         if estado_jogada == 0:
-            if all(self.todas_adjacencias_invalidas(construtor) for construtor in self._jogadores[0].get_construtores()):
+            #talvez com a implementação mais completa, teremos que fazer com q o avaliar perdedor de jogada = 0 rode no fim de construtor, após mudar jogada pra =0 e antes de desabilitar a interface
+            if all(self.todas_adjacencias_invalidas(construtor) for construtor in self.get_jogador_desabilitado().get_construtores()):
+                self.get_jogador_desabilitado().set_perdedor(True)
+                self.get_jogador_habilitado().set_vencedor()
+                self.set_status(4)
+                return True
+            if all(self.todas_adjacencias_invalidas(construtor) for construtor in self.get_jogador_habilitado().get_construtores()):
                 self.get_jogador_habilitado().set_perdedor(True)
-                self.set_vencedor(self.get_jogador_desabilitado())
+                self.get_jogador_desabilitado().set_vencedor()
                 self.set_status(4)
                 return True
             return False
