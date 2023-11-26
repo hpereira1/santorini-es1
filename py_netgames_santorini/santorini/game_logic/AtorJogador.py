@@ -86,7 +86,7 @@ class AtorJogador(PyNetgamesServerListener):
         if (self.get_local_habilitado()):            
             jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
             novo_estado = self.meuTabuleiro.get_estado()
-            
+            print(f"Estado após jogada: {novo_estado}")
             self.atualizar_interface_usuario(novo_estado)
             if (bool(jogada_a_enviar)):
                 self.server_proxy.send_move(self.get_partida_id(), jogada_a_enviar)
@@ -104,8 +104,8 @@ class AtorJogador(PyNetgamesServerListener):
         for x in range(5):
             for y in range(5):
                 label = self.boardView[x][y]
-                dados_cel = novo_estado.get_value(x+1, y+1)
-                print(dados_cel[0],dados_cel[1])
+                dados_cel = novo_estado.get_value(x, y)
+                print(f"Célula ({x}, {y}): Nível do andar = {dados_cel[0]}, Ocupação = {dados_cel[1]}")
                 if not isinstance(dados_cel, list) or len(dados_cel) != 2:
                     raise ValueError("dados_cel deve ser uma lista com dois elementos")
                 if dados_cel[1] == 0:  # não ocupado
@@ -138,7 +138,8 @@ class AtorJogador(PyNetgamesServerListener):
                 elif dados_cel[1]==2: #ocupado jog2
                     if dados_cel[0] == 0:
                         label.config(image=self.j2g2)
-                    
+        self.mainJanela.update()
+        
     def get_partida_id(self):
         return self._partida_id
 
@@ -170,7 +171,7 @@ class AtorJogador(PyNetgamesServerListener):
         self.meuTabuleiro.click(int(received_move['linha']), int(received_move['coluna']))
         novo_estado = self.meuTabuleiro.get_estado()
         self.atualizar_interface_usuario(novo_estado)
-        if (novo_estado.get_status_partida() == 1):
+        if self.meuTabuleiro.get_jogador_habilitado().get_nome() == "Jogador local":
             self.habilitar_interface()
 
     def add_listener(self):
@@ -192,9 +193,9 @@ class AtorJogador(PyNetgamesServerListener):
         print('********** ORDEM: ', partida.position)
         print('********** match_id: ', partida.match_id)
         self.set_partida_id(partida.match_id)
-        if (partida.position == 0):
+        if (partida.position == 1):
             self.habilitar_interface()
         self.meuTabuleiro.start_partida(self.get_local_habilitado())
-        # novo_estado = self.meuTabuleiro.get_estado()
-        # self.atualizar_interface_usuario(novo_estado)
+        novo_estado = self.meuTabuleiro.get_estado()
+        self.atualizar_interface_usuario(novo_estado)
 

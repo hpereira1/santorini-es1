@@ -59,8 +59,8 @@ class Tabuleiro:
         celula_selecionada = self.get_celula(aMove)
         status = self.get_status()
         if not (self.todos_construtores_posicionados() )or ((status == 3 and not self.todos_construtores_posicionados())):
-            self.inicio_de_jogo(celula_selecionada)
             self.set_status(1)
+            self.inicio_de_jogo(celula_selecionada)
         else:
             pass
         
@@ -116,7 +116,7 @@ class Tabuleiro:
                         # print(f"val value = {value}")       
                 # else:
                 #     print(f"Celula ({x}, {y}) está vazia")
-                estado.set_value((x+1), (y+1),z, value)
+                estado.set_value((x), (y),z, value)
                 print(estado.get_value(x,y))
         return estado
 
