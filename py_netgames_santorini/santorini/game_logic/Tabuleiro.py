@@ -73,7 +73,8 @@ class Tabuleiro:
                 builder_marcado = self.get_jogador_habilitado().get_construtor_marcado()
                 self.movimentar_construtor(celula_selecionada, builder_marcado)
             elif estado_jogada == 2:
-                pass
+                builder_marcado = self.get_jogador_habilitado().get_construtor_marcado()
+                self.construir(celula_selecionada, builder_marcado)
             # else:
             #     # Opcional: lógica para qualquer outro valor de estado_jogada
             #     self.lidar_com_outros_estados()            
@@ -233,28 +234,54 @@ class Tabuleiro:
                 print("Status definido como jogada irregular if aux_cel (3)")  # Debug: Indica que a jogada foi irregular
                 return
             
-    def construir(self, celula_selecionada : Celula):
-        pass
+    def construir(self, celula_selecionada : Celula, builder_marcado: Construtor):
+        #ccheca perdedor
+        print(f"Iniciando construção. Construtor em {builder_marcado.get_coordenada_xyz()}")
+        adjacente = self.celula_adjacente_valida(celula_selecionada, builder_marcado)
+        if not adjacente:
+            self.set_status(3)
+            print("Jogada irregular: construção inválida, if not adjacente.")
+            return
+        coord_cel = celula_selecionada.get_coordenada_xyz()
+        celula_selecionada.set_coordenada_xyz([(coord_cel[0]), (coord_cel[1]), (coord_cel[2]+1)])
+        print(f"Construído andar em {celula_selecionada.get_coordenada_xyz()}")
+        self.set_status(2)
+        builder_marcado.set_marcado(False)
+        jog_hab = self.get_jogador_habilitado()
+        jog_desab = self.get_jogador_desabilitado()
+        jog_hab.desabilitar()
+        jog_desab.habilitar()
+        self.set_estado_jogada(0)
+        
 
     def checar_adjacencia(self, celula_selecionada : Celula):
         pass
 
     def movimentar_construtor(self, celula_selecionada : Celula,builder_marcado: Construtor):
+        print(f"Iniciando movimentação do construtor. Coordenadas: {builder_marcado.get_coordenada_xyz()}")
         cel_adj_valida = self.celula_adjacente_valida(celula_selecionada, builder_marcado)
+        print(f"Célula adjacente válida: {cel_adj_valida}")
         if(not cel_adj_valida): 
             self.set_status(3)
+            print("Jogada irregular: célula adjacente inválida.")
             return
+        
         self._matriz[builder_marcado.get_coordenada_xyz()[0]] [builder_marcado.get_coordenada_xyz()[1]].empty()
         celula_selecionada.set_ocupante(builder_marcado)
+        builder_marcado.set_coordenada_xyz(celula_selecionada.get_coordenada_xyz())
+        print(f"Construtor movido para {celula_selecionada.get_coordenada_xyz()} Coord builder {builder_marcado.get_coordenada_xyz()}")
         if(celula_selecionada.get_coordenada_xyz()[2] == 3):
             self.get_jogador_habilitado().set_vencedor()
+            self.get_jogador_habilitado().desabilitar()
             self.set_status(4)
+            print("Vencedor encontrado!")
             return
         self.set_estado_jogada(2)
         #talvez fazer avaliar perdedor depois de mudar estado
         
     def celula_adjacente_valida(self, celula_recebida, construtor_marcado):
         """Verifica se uma célula específica é uma adjacência válida para o construtor marcado."""
+        print(f"Verificando se célula {celula_recebida.get_coordenada_xyz()} é adjacente válida para construtor em {construtor_marcado.get_coordenada_xyz()}")
         x, y, _ = construtor_marcado.get_coordenada_xyz()
         direcoes = [(-1, -1), (-1, 0), (-1, 1),
                     (0, -1), (0, 1),
@@ -265,6 +292,7 @@ class Tabuleiro:
             if 0 <= nx < 5 and 0 <= ny < 5:
                 celula_adjacente = self._matriz[nx][ny]
                 if celula_adjacente == celula_recebida:
+                    print(f"Célula {celula_recebida.get_coordenada_xyz()} é válida: {not self.celula_adjacente_invalida(celula_adjacente, construtor_marcado)}")
                     return not self.celula_adjacente_invalida(celula_adjacente, construtor_marcado)
         return False
 
@@ -302,12 +330,14 @@ class Tabuleiro:
         self._vencedor = vencedor
 
 
-    def celula_adjacente_invalida(self, celula, construtor):
+    def celula_adjacente_invalida(self, celula : Celula, construtor : Construtor):
         """Verifica se a célula adjacente é válida considerando a posição e altura do construtor."""
-        altura_construtor = construtor.get_coordenada_xyz()[2]
-        altura_celula = celula.get_coordenada_xyz()[2]
-        return celula.ocupado() or (altura_construtor - altura_celula < -1)
-
+        if(self.get_estado_jogada()==0 or self.get_estado_jogada()==1):
+            altura_construtor = construtor.get_coordenada_xyz()[2]
+            altura_celula = celula.get_coordenada_xyz()[2]
+            return celula.ocupado() or (altura_construtor - altura_celula < -1)
+        elif (self.get_estado_jogada() == 2): 
+            return celula.ocupado() or (celula.get_coordenada_xyz()[2] > 3)
     def todas_adjacencias_invalidas(self, construtor):
         """Verifica se todas as células adjacentes ao construtor são válidas."""
         x, y, _ = construtor.get_coordenada_xyz()
