@@ -17,7 +17,7 @@ class AtorJogador(PyNetgamesServerListener):
         self._turno_local = False
         self._partida_id = ""
 
-        self.mainJanela.geometry("800x600")
+        self.mainJanela.geometry("500x550")
         self.mainJanela.resizable(False, False)
         self.mainJanela.grid_rowconfigure(0, weight=1)
         self.mainJanela.grid_columnconfigure(0, weight=1)
@@ -37,14 +37,14 @@ class AtorJogador(PyNetgamesServerListener):
         # self.messageFrame.grid(row=1, column=0, sticky="ew")
         # self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
         # self.grass_image2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
-        self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
-        self.grass_image = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
-        self.andar1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png'))
-        self.andar2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png'))
-        self.andar3 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar3.png'))
-        self.andar4 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png'))
-        self.j1g2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/J1g2.png'))
-        self.j2g2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/J2g2.png'))
+        self.grass_image = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png')).resize((85, 85)))
+        self.andar1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png')).resize((85, 85)))
+        self.andar2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png')).resize((85, 85)))
+        self.andar3 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar3.png')).resize((85, 85)))
+        self.andar4 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar4.png')).resize((85, 85)))
+        self.j1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/J1g1.png')).resize((85, 85)))
+        self.j2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/J2g1.png')).resize((85, 85)))
+        
     
 
         self.boardView = []
@@ -57,10 +57,10 @@ class AtorJogador(PyNetgamesServerListener):
             row = []
             for j in range(5):
                 # grass_image = self.grass_image1 if (i + j) % 2 == 0 else self.grass_image2
+                label = Label(self.mainFrame, bd = 2, relief="solid", image=self.grass_image)
                 # label = Label(self.mainFrame, image=self.grass_image, bd = 2, relief="solid")
-                label = Label(self.mainFrame, image=self.grass_image, bd = 2, relief="solid")
-                # label.image = self.grass_image
-                label.grid(row=i, column=j, sticky='news')
+                label.image = self.grass_image
+                label.grid(row=i, column=j)
                 label.bind('<Button-1>', lambda event, i=i, j=j: self.click(event, i, j))
                 row.append(label)
             self.boardView.append(row)
@@ -108,36 +108,39 @@ class AtorJogador(PyNetgamesServerListener):
                 print(f"Célula ({x}, {y}): Nível do andar = {dados_cel[0]}, Ocupação = {dados_cel[1]}")
                 if not isinstance(dados_cel, list) or len(dados_cel) != 2:
                     raise ValueError("dados_cel deve ser uma lista com dois elementos")
-                if dados_cel[1] == 0:  # não ocupado
-                    if dados_cel[0] == 0:
-                        label.config(image=self.grass_image)
-                    elif dados_cel[0] == 1:
-                        label.config(image=self.andar1)
-                    elif dados_cel[0] == 2:
-                        label.config(image=self.andar2)
-                    elif dados_cel[0] == 3:
-                        label.config(image=self.andar3)
-                    elif dados_cel[0] == 4:
-                        label.config(image=self.andar4)
-                # if dados_cel[1]==0: # n ocupado
+                # if dados_cel[1] == 0:  # não ocupado
                 #     if dados_cel[0] == 0:
-                #         label['image'] = self.grass_image
-                #     elif dados_cel[0] == 1:
-                #         label['image'] = self.andar1
-                #     elif dados_cel[0] == 2:
-                #         label['image'] = self.andar2
-                #     elif dados_cel[0] == 3:
-                #         label['image'] = self.andar3
-                #     elif dados_cel[0] == 4:
-                #         label['image'] = self.andar4
+                    #     label.config(image=self.grass_image)
+                    # elif dados_cel[0] == 1:
+                    #     label.config(image=self.andar1)
+                    # elif dados_cel[0] == 2:
+                    #     label.config(image=self.andar2)
+                    # elif dados_cel[0] == 3:
+                    #     label.config(image=self.andar3)
+                    # elif dados_cel[0] == 4:
+                    #     label.config(image=self.andar4)
+                if dados_cel[1]==0: # n ocupado
+                    if dados_cel[0] == 0:
+                        label['image'] = self.grass_image
+                    elif dados_cel[0] == 1:
+                        label['image'] = self.andar1
+                    elif dados_cel[0] == 2:
+                        label['image'] = self.andar2
+                    elif dados_cel[0] == 3:
+                        label['image'] = self.andar3
+                    elif dados_cel[0] == 4:
+                        label['image'] = self.andar4
                     
                 elif dados_cel[1]==1: #ocupado jog1
                     if dados_cel[0] == 0:
-                        label.config(image=self.j1g2)
+                        # label.config(image=self.j1g2)
+                        label['image'] = self.j1
                     
                 elif dados_cel[1]==2: #ocupado jog2
                     if dados_cel[0] == 0:
-                        label.config(image=self.j2g2)
+                        # label.config(image=self.j2g2)
+                        label['imag'] = self.j2
+                        
         self.mainJanela.update()
         
     def get_partida_id(self):
