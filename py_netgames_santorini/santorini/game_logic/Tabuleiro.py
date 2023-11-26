@@ -62,8 +62,18 @@ class Tabuleiro:
             self.set_status(1)
             self.inicio_de_jogo(celula_selecionada)
         else:
-            pass
-        
+            self.set_status(2)
+            estado_jogada = self.get_estado_jogada()
+            if estado_jogada == 0:
+                self.selecionar_construtor(celula_selecionada)
+            elif estado_jogada == 1:
+                pass
+            elif estado_jogada == 2:
+                pass
+            # else:
+            #     # Opcional: lógica para qualquer outro valor de estado_jogada
+            #     self.lidar_com_outros_estados()            
+
         
     def resetar(self):
         self._matriz = []
@@ -179,8 +189,25 @@ class Tabuleiro:
                 
             
     def selecionar_construtor(self, celula_selecionada : Celula):
-        pass
-
+        perdedor = self.avaliar_perdedor(celula_selecionada)
+        if not(perdedor):
+            jogador_hab = self. get_jogador_habilitado()
+            ocupado = celula_selecionada.ocupado()
+            builder = celula_selecionada.get_ocupante()
+            aux_sel = ocupado and builder in jogador_hab.get_construtores()
+            if(aux_sel):
+                teste = (not self.todas_adjacencias_invalidas(celula_selecionada)) and aux_sel
+                if teste:
+                    builder.set_marcado(True)
+                    self.set_estado_jogada(1)
+                    return builder
+                else:
+                    self.set_status(3)
+                    return
+            else:
+                self.set_status(3)
+                return
+            
     def construir(self, celula_selecionada : Celula):
         pass
 
@@ -191,7 +218,19 @@ class Tabuleiro:
         pass
 
     def avaliar_perdedor(self, celula_selecionada : Celula):
-        pass
+        estado_jogada = self.get_estado_jogada()
+        if estado_jogada == 0:
+            if all(self.todas_adjacencias_invalidas(construtor) for construtor in self._jogadores[0].get_construtores()):
+                self.get_jogador_habilitado().set_perdedor(True)
+                self.set_vencedor(self.get_jogador_desabilitado())
+                self.set_status(4)
+                return True
+            return False
+                
+        elif estado_jogada == 1:
+            pass
+        elif estado_jogada == 2:
+            pass
 
     def get_vencedor(self):
         if (self._jogadores[0].get_vencedor()):
@@ -204,3 +243,25 @@ class Tabuleiro:
 
     def set_vencedor(self, vencedor):
         self._vencedor = vencedor
+
+
+    def celula_adjacente_invalida(self, celula, construtor):
+        """Verifica se a célula adjacente é válida considerando a posição e altura do construtor."""
+        altura_construtor = construtor.get_coordenada_xyz()[2]
+        altura_celula = celula.get_coordenada_xyz()[2]
+        return celula.ocupado() or (altura_construtor - altura_celula < -1)
+
+    def todas_adjacencias_invalidas(self, construtor):
+        """Verifica se todas as células adjacentes ao construtor são válidas."""
+        x, y, _ = construtor.get_coordenada_xyz()
+        direcoes = [(-1, -1), (-1, 0), (-1, 1),
+                    (0, -1), (0, 1),
+                    (1, -1), (1, 0), (1, 1)]
+
+        for dx, dy in direcoes:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < 5 and 0 <= ny < 5:
+                celula_adjacente = self._matriz[nx][ny]
+                if not self.celula_adjacente_invalida(celula_adjacente, construtor):
+                    return False
+        return True
