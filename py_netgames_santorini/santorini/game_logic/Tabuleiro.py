@@ -63,13 +63,14 @@ class Tabuleiro:
             #     return 
             estado_jogada = self.get_estado_jogada()
             if estado_jogada == 0:
-                builder_marcado = self.selecionar_construtor(celula_selecionada)
-                if (isinstance(builder_marcado, Construtor)):
-                    print(f"Construtor marcado if processar jogada: {builder_marcado.get_coordenada_xyz()}, {builder_marcado.get_simbolo()}, {builder_marcado.get_marcado()}")  # Debug: Imprime informações sobre o construtor marcado
+                builder = self.selecionar_construtor(celula_selecionada)
+                if (isinstance(builder, Construtor)):
+                    print(f"Construtor marcado if processar jogada: {builder.get_coordenada_xyz()}, {builder.get_simbolo()}, {builder.get_marcado()}")  # Debug: Imprime informações sobre o construtor marcado
                     print(f"status jogada dps processar jogada {self.get_status()}")
-                elif(builder_marcado == None): 
-                    print(f"nao construtor processar: {builder_marcado}" )
+                elif(builder == None): 
+                    print(f"nao construtor processar: {builder}" )
             elif estado_jogada == 1:
+                builder_marcado = self.get_jogador_habilitado().get_construtor_marcado()
                 self.movimentar_construtor(celula_selecionada, builder_marcado)
             elif estado_jogada == 2:
                 pass
@@ -86,11 +87,11 @@ class Tabuleiro:
                 celula = Celula()
                 celula.set_coordenada_xyz([x, y, 0])
                 if celula.get_coordenada_xyz() == [0,2,0]:
-                    celula.set_coordenada_xyz([0,2,1])
+                    celula.set_coordenada_xyz([0,2,2])
                 elif celula.get_coordenada_xyz() == [1,2,0]:
-                    celula.set_coordenada_xyz([1,2,2])
+                    celula.set_coordenada_xyz([1,2,1])
                 elif celula.get_coordenada_xyz() == [1,3,0]:
-                    celula.set_coordenada_xyz([1,3,2])
+                    celula.set_coordenada_xyz([1,3,3])
                 elif celula.get_coordenada_xyz() == [1,4,0]:
                     celula.set_coordenada_xyz([1,4,4])
                 elif celula.get_coordenada_xyz() == [4,3,0]:
@@ -238,8 +239,34 @@ class Tabuleiro:
     def checar_adjacencia(self, celula_selecionada : Celula):
         pass
 
-    def movimentar_construtor(self, celula_selecionada : Celula):
-        pass
+    def movimentar_construtor(self, celula_selecionada : Celula,builder_marcado: Construtor):
+        cel_adj_valida = self.celula_adjacente_valida(celula_selecionada, builder_marcado)
+        if(not cel_adj_valida): 
+            self.set_status(3)
+            return
+        self._matriz[builder_marcado.get_coordenada_xyz()[0]] [builder_marcado.get_coordenada_xyz()[1]].empty()
+        celula_selecionada.set_ocupante(builder_marcado)
+        if(celula_selecionada.get_coordenada_xyz()[2] == 3):
+            self.get_jogador_habilitado().set_vencedor()
+            self.set_status(4)
+            return
+        self.set_estado_jogada(2)
+        #talvez fazer avaliar perdedor depois de mudar estado
+        
+    def celula_adjacente_valida(self, celula_recebida, construtor_marcado):
+        """Verifica se uma célula específica é uma adjacência válida para o construtor marcado."""
+        x, y, _ = construtor_marcado.get_coordenada_xyz()
+        direcoes = [(-1, -1), (-1, 0), (-1, 1),
+                    (0, -1), (0, 1),
+                    (1, -1), (1, 0), (1, 1)]
+
+        for dx, dy in direcoes:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < 5 and 0 <= ny < 5:
+                celula_adjacente = self._matriz[nx][ny]
+                if celula_adjacente == celula_recebida:
+                    return not self.celula_adjacente_invalida(celula_adjacente, construtor_marcado)
+        return False
 
     def avaliar_perdedor(self, celula_selecionada : Celula):
         estado_jogada = self.get_estado_jogada()

@@ -63,6 +63,8 @@ class Jogador:
         return True
 
     def get_construtor_marcado(self):
-        # Lógica para retornar o construtor marcado
-        # Retornar a instância do construtor marcado
-        pass
+        """Retorna o construtor marcado, se houver."""
+        for construtor in self._construtores:
+            if construtor.get_marcado():
+                return construtor
+        return None
