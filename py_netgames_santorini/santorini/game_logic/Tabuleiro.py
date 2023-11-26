@@ -23,7 +23,7 @@ class Tabuleiro:
                 celula.set_coordenada_xyz([x, y, 0])
                 linha.append(celula)
             self._matriz.append(linha)
-        self._jogadores = [Jogador("Jogador local", 1, [Construtor(1), Construtor(1)]), Jogador("Jogador remoto", 2, [Construtor(2), Construtor(2)])] 
+        self._jogadores = [Jogador("Jogador local", 1, [Construtor(), Construtor()]), Jogador("Jogador remoto", 2, [Construtor(), Construtor()])] 
         self._estado_jogada = 0
         self._status_partida = 0
         self._vencedor = None 
@@ -48,7 +48,13 @@ class Tabuleiro:
             self._jogadores[0].habilitar()
         else:
             self._jogadores[1].habilitar()
+            self.invert_player_symbol()
 
+    def todos_construtores_posicionados(self):
+        # Retorna True se todos os construtores dos dois jogadores estiverem posicionados
+        return (self._jogadores[0].todos_builders_posicionados() and 
+                self._jogadores[1].todos_builders_posicionados())
+        
     def processar_jogada(self, aMove : Movimento):
         celula_selecionada = self.get_celula(aMove)
         status = self.get_status()
@@ -71,6 +77,12 @@ class Tabuleiro:
         self._jogadores[1].resetar()
         self.set_status(0)
 
+    def invert_player_symbol(self):	
+        aux1 = self._jogadores[0].get_simbolo()
+        aux2 = self._jogadores[1].get_simbolo()
+        self._jogadores[0].set_simbolo(aux2)
+        self._jogadores[1].set_simbolo(aux1)
+        
     def get_estado(self):
         estado = BoardImage()
         estado.set_status_partida(self.get_status())
@@ -141,23 +153,18 @@ class Tabuleiro:
             return
         else: 
             for construtor in construtores:
-                if not construtor.esta_posicionado():
+                if not construtor.posicionado():
                     celula_selecionada.set_ocupante(construtor)
                     construtor.set_coordenada_xyz(coord_cell)
                     break
             
         if(jogador_habilitado.todos_builders_posicionados()):
+            jogador_habilitado.set_turno(False)
+            jogador_desabilitado.set_turno(True)
+            self.set_status(1)
+            
             if(jogador_desabilitado.todos_builders_posicionados()):
                 self.set_status(2)
-                jogador_habilitado.set_turno(False)
-                jogador_desabilitado.set_turno(True)
-            else:
-                self._status_partida(1)
-                jogador_habilitado.set_turno(False)
-                jogador_desabilitado.set_turno(True)
-        else:
-            jogador_habilitado.set_turno(True)
-            jogador_desabilitado.set_turno(False)
                 
             
     def selecionar_construtor(self, celula_selecionada : Celula):

@@ -79,19 +79,21 @@ class AtorJogador(PyNetgamesServerListener):
 
         self.mainJanela.mainloop()
         
-
     
     def click(self, event, linha, coluna):
         print(self.get_local_habilitado())
-        if (self.get_local_habilitado()):
+        if (self.get_local_habilitado()):            
             jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
             novo_estado = self.meuTabuleiro.get_estado()
+            
             self.atualizar_interface_usuario(novo_estado)
             if (bool(jogada_a_enviar)):
-                self.desabilitar_interface()
                 self.server_proxy.send_move(self.get_partida_id(), jogada_a_enviar)
-        else:
+                if self.meuTabuleiro.get_jogador_desabilitado() == self.meuTabuleiro._jogadores[0]:
+                    self.desabilitar_interface()
+        else: 
             messagebox.showinfo(message='Você não está habilitado para jogar')
+
 
 
     def atualizar_interface_usuario(self, novo_estado : BoardImage):
@@ -102,13 +104,14 @@ class AtorJogador(PyNetgamesServerListener):
             for y in range(5):
                 label = self.boardView[x][y]
                 dados_cel = novo_estado.get_value(x+1, y+1)
+                print(dados_cel[0],dados_cel[1])
                 if not isinstance(dados_cel, list) or len(dados_cel) != 2:
                     raise ValueError("dados_cel deve ser uma lista com dois elementos")
                 if dados_cel[1] == 0:  # não ocupado
                     if dados_cel[0] == 0:
                         label.config(image=self.grass_image)
                     elif dados_cel[0] == 1:
-                        label.config(image=self.andar2)
+                        label.config(image=self.andar1)
                     elif dados_cel[0] == 2:
                         label.config(image=self.andar2)
                     elif dados_cel[0] == 3:
@@ -149,8 +152,6 @@ class AtorJogador(PyNetgamesServerListener):
 
     def get_local_habilitado(self):
         return self._turno_local
-
-
 
     def receive_error(self, error):
         messagebox.showinfo(message='Notificação de erro do servidor. Feche o programa.')       

@@ -35,6 +35,8 @@ class Jogador:
 
     def set_simbolo(self, simbolo):
         self._simbolo = simbolo
+        for construtor in self._construtores:
+            construtor.set_simbolo(simbolo)
         
     def get_simbolo(self):
         return self._simbolo
