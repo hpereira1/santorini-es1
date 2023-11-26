@@ -111,9 +111,8 @@ class Tabuleiro:
                 if (cel.ocupado()):
                     ocupante = cel.get_ocupante()
                     # print(f"Celula ({x}, {y}) está ocupada pelo construtor com símbolo {ocupante.get_simbolo()}")
-                    if isinstance(ocupante,Construtor):
-                        value = ocupante.get_simbolo()	
-                        # print(f"val value = {value}")       
+                    value = ocupante.get_simbolo()	
+                        # print(f"val value = {value}")
                 # else:
                 #     print(f"Celula ({x}, {y}) está vazia")
                 estado.set_value((x), (y),z, value)

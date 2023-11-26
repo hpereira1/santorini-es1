@@ -86,7 +86,6 @@ class AtorJogador(PyNetgamesServerListener):
         if (self.get_local_habilitado()):            
             jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
             novo_estado = self.meuTabuleiro.get_estado()
-            print(f"Estado após jogada: {novo_estado}")
             self.atualizar_interface_usuario(novo_estado)
             if (bool(jogada_a_enviar)):
                 self.server_proxy.send_move(self.get_partida_id(), jogada_a_enviar)
