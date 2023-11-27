@@ -146,7 +146,7 @@ class AtorJogador(PyNetgamesServerListener):
                         label['image'] = self.a3j2
     
                         
-        self.mainJanela.update()
+        # self.mainJanela.update()
         
     def get_partida_id(self):
         return self._partida_id
@@ -179,7 +179,7 @@ class AtorJogador(PyNetgamesServerListener):
         self.meuTabuleiro.click(int(received_move['linha']), int(received_move['coluna']))
         novo_estado = self.meuTabuleiro.get_estado()
         self.atualizar_interface_usuario(novo_estado)
-        if self.meuTabuleiro.get_jogador_habilitado().get_nome() == "Jogador local":
+        if self.meuTabuleiro.get_jogador_habilitado() == self.meuTabuleiro._jogadores[0]:
             self.habilitar_interface()
 
     def add_listener(self):

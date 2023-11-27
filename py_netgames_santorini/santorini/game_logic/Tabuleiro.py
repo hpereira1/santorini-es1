@@ -15,12 +15,21 @@ from .Construtor import Construtor
 
 class Tabuleiro:
     def __init__(self):
-        self._matriz = []
-            
-        self._jogadores = [Jogador("Jogador local", 1, [Construtor(1), Construtor(1)]), Jogador("Jogador remoto", 2, [Construtor(2), Construtor(2)])] 
+        self._jogadores = [Jogador(), Jogador()]
+        self._jogadores[0].initialize("Jogador local", 1)
+        self._jogadores[1].initialize("Jogador remoto", 2)
+        
         self._estado_jogada = 0
         self._status_partida = 0
         self._vencedor = None 
+        self._matriz = []
+        for x in range(5):
+            linha = []
+            for y in range(5):
+                celula = Celula()
+                celula.set_coordenada_xyz([x, y, 0])
+                linha.append(celula)
+            self._matriz.append(linha)
 
 
    
@@ -81,29 +90,18 @@ class Tabuleiro:
 
         
     def resetar(self):
-        self._matriz = []
         for x in range(5):
-            linha = []
             for y in range(5):
                 celula = Celula()
                 celula.set_coordenada_xyz([x, y, 0])
-                # if celula.get_coordenada_xyz() == [0,2,0]:
-                #     celula.set_coordenada_xyz([0,2,2])
-                # elif celula.get_coordenada_xyz() == [1,2,0]:
-                #     celula.set_coordenada_xyz([1,2,1])
-                # elif celula.get_coordenada_xyz() == [1,3,0]:
-                #     celula.set_coordenada_xyz([1,3,3])
-                # elif celula.get_coordenada_xyz() == [1,4,0]:
-                #     celula.set_coordenada_xyz([1,4,4])
-                # elif celula.get_coordenada_xyz() == [4,3,0]:
-                #     celula.set_coordenada_xyz([4,3,1])
-                # elif celula.get_coordenada_xyz() == [3,0,0]:
-                #     celula.set_coordenada_xyz([3,0,3])
-                linha.append(celula)
-            self._matriz.append(linha)
+                celula.empty()
+                self._matriz[x][y] = celula
         self._jogadores[0].resetar()
         self._jogadores[1].resetar()
+        self._jogadores[0].desabilitar()
+        self._jogadores[1].desabilitar()
         self.set_status(0)
+        self.set_estado_jogada(0)
 
     def invert_player_symbol(self):	
         aux1 = self._jogadores[0].get_simbolo()
@@ -208,33 +206,6 @@ class Tabuleiro:
     def selecionar_construtor(self, celula_selecionada : Celula):
         # perdedor = self.avaliar_perdedor(celula_selecionada)
         print(f" coord cel_sel: {celula_selecionada.get_coordenada_xyz()}")
-        # print(f"Verificando se há um perdedor: {perdedor}")
-        # if not(perdedor):
-        #     jogador_hab = self.get_jogador_habilitado()
-        #     ocupado = celula_selecionada.ocupado()
-        #     builder = celula_selecionada.get_ocupante()
-        #     aux_sel = ocupado and builder in jogador_hab.get_construtores()
-        #     print(f"Célula ocupada por construtor do jogador habilitado: {aux_sel}")  # Debug: Verifica se a célula está ocupada pelo construtor do jogador habilitado
-            
-        #     if(aux_sel):
-        #         teste = (not self.todas_adjacencias_invalidas(celula_selecionada)) and aux_sel
-        #         print(f"Célula com adjacências válidas: {teste}")  # Debug: Verifica se as adjacências são válidas
-            
-        #         if teste:
-        #             builder.set_marcado(True)
-        #             self.set_estado_jogada(1)
-        #             print(f"estado da jogada apos builder marcado: {self.get_estado_jogada()}")
-        #             print(f"Construtor marcado: {builder.get_coordenada_xyz()}, simbolo {builder.get_simbolo()}, marcado ? {builder.get_marcado()}")  # Debug: Imprime informações sobre o construtor marcado
-        #             return builder
-        #         else:
-        #             self.set_status(3)
-        #             print("Status definido como jogada irregular if teste (3)")  # Debug: Indica que a jogada foi irregular
-        #             return
-        #     else:
-        #         self.set_status(3)
-        #         print("Status definido como jogada irregular if aux_cel (3)")  # Debug: Indica que a jogada foi irregular
-        #         return
-        
         jogador_hab = self.get_jogador_habilitado()
         ocupado = celula_selecionada.ocupado()
         builder = celula_selecionada.get_ocupante()

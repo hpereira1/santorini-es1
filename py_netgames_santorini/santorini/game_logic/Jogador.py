@@ -1,12 +1,24 @@
+from .Construtor import Construtor
 class Jogador:
-    def __init__(self, aNome, simbolo, construtores):
+    def __init__(self):
         self._turno = False
-        self._construtores = construtores
+        self._construtores = [Construtor(), Construtor()]
         self._vencedor = False
         self._perdedor = False
-        self._simbolo = simbolo
-        self._nome = aNome
+        self._simbolo = None
+        self._nome = ''
 
+    def initialize(self, aName, aSymbol):
+        self._simbolo = aSymbol	#int
+        self._nome = aName		#string
+        for construtor in self._construtores:
+            construtor.set_simbolo(aSymbol)
+            print(construtor.get_simbolo())
+            print(construtor.get_coordenada_xyz())
+        self._turno = False		#bool
+        self._vencedor = False		#bool
+        self._perdedor = False		#bool
+  
     def habilitar(self):
         self._turno = True
 
@@ -17,6 +29,10 @@ class Jogador:
         self._vencedor = False
         self._perdedor = False
         self._turno = False
+        for construtor in self._construtores:
+            construtor.set_coordenada_xyz([-1, -1, -1])
+            print(construtor.get_simbolo())
+            print(construtor.get_coordenada_xyz())
 
     def get_vencedor(self):
         return self._vencedor
@@ -35,8 +51,6 @@ class Jogador:
 
     def set_simbolo(self, simbolo):
         self._simbolo = simbolo
-        for construtor in self._construtores:
-            construtor.set_simbolo(simbolo)
         
     def get_simbolo(self):
         return self._simbolo
