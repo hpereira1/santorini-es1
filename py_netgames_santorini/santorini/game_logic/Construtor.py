@@ -1,11 +1,9 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 from .Entidade import Entidade
 
-class Construtor(Entidade):  # Substituir Entidade pela classe pai apropriada
+class Construtor(Entidade):
     def __init__(self):
-        super().__init__()  # Chama o construtor da classe pai, se necessário
-        self._marcado = False  # Inicializa marcado como False
+        super().__init__() 
+        self._marcado = False
         self._coordenada_xyz = [-1, -1, -1]
         self._simbolo = None
         

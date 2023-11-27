@@ -1,6 +1,3 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
-
 class Entidade:
     def __init__(self):
         self._coordenada_xyz = list 
@@ -15,6 +12,5 @@ class Entidade:
     def set_id(self, id):
         self._id = id
 
-    # Getter para id
     def get_id(self):
         return self._id

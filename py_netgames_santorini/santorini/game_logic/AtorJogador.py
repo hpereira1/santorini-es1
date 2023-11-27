@@ -16,6 +16,7 @@ class AtorJogador(PyNetgamesServerListener):
         self.mainJanela.title("Santorini")
         self._turno_local = False
         self._partida_id = ""
+        self.ultima_celula_clicada = None
 
         self.mainJanela.geometry("500x550")
         self.mainJanela.resizable(False, False)
@@ -28,15 +29,6 @@ class AtorJogador(PyNetgamesServerListener):
         self.messageFrame = Frame(self.mainJanela, bg="gray")
         self.messageFrame.grid(row=1, column=0, sticky="ew", padx=4, pady=4)
 
-        # self.mainFrame = Frame(self.mainJanela, padx=44, pady=40, bg="gray")
-        # self.messageFrame = Frame(self.mainJanela, padx=4, pady=4, bg="gray")
-
-        # self.mainFrame.grid(row=0 , column=0)
-        # self.messageFrame.grid(row=1 , column=0) 
-        # self.mainFrame.grid(row=0, column=0, sticky="nsew")
-        # self.messageFrame.grid(row=1, column=0, sticky="ew")
-        # self.grass_image1 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png'))
-        # self.grass_image2 = PhotoImage(file=os.path.join(os.path.dirname(__file__), 'imagens/Grama2.png'))
         self.grass_image = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Grama1.png')).resize((80, 80)))
         self.andar1 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar1.png')).resize((80, 80)))
         self.andar2 = ImageTk.PhotoImage(Image.open(os.path.join(os.path.dirname(__file__), 'imagens/Andar2.png')).resize((80, 80)))
@@ -88,7 +80,11 @@ class AtorJogador(PyNetgamesServerListener):
         
     
     def click(self, event, linha, coluna):
-        print(self.get_local_habilitado())
+        if self.ultima_celula_clicada is not None:
+            self.ultima_celula_clicada.config(bd = 2, relief = "solid")
+        label_clicada = self.boardView[linha][coluna]
+        label_clicada.config(bd= 4, bg = 'purple', relief = "raised")
+        self.ultima_celula_clicada = label_clicada
         if (self.get_local_habilitado()):            
             jogada_a_enviar = self.meuTabuleiro.click(linha, coluna)
             novo_estado = self.meuTabuleiro.get_estado()
@@ -146,7 +142,6 @@ class AtorJogador(PyNetgamesServerListener):
                         label['image'] = self.a3j2
     
                         
-        # self.mainJanela.update()
         
     def get_partida_id(self):
         return self._partida_id
@@ -175,7 +170,7 @@ class AtorJogador(PyNetgamesServerListener):
 
     def receive_move(self, move):
         received_move = move.payload
-        print(received_move)
+        # print(received_move)
         self.meuTabuleiro.click(int(received_move['linha']), int(received_move['coluna']))
         novo_estado = self.meuTabuleiro.get_estado()
         self.atualizar_interface_usuario(novo_estado)

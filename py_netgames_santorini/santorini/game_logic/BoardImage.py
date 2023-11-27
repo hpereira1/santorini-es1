@@ -17,10 +17,8 @@ class BoardImage:
     def set_value(self, linha, coluna, z : int, value : int):
         self._map[linha][coluna] = [z, value]
 
-    # Getter para status_partida
     def get_status_partida(self):
         return self._status_partida
 
-    # Setter para status_partida
     def set_status_partida(self, status_partida):
         self._status_partida = status_partida

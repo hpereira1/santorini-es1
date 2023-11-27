@@ -1,13 +1,11 @@
-#!/usr/bin/python
-# -*- coding: UTF-8 -*-
 from .Jogador import Jogador
 from .Construtor import Construtor
 from  .Entidade import Entidade
 
-class Celula(Entidade):  # Substituir Entidade pela classe pai apropriada
+class Celula(Entidade):  
     def __init__(self):
-        super().__init__()  # Chama o construtor da classe pai, se necessário
-        self._ocupante = None  # Inicializa ocupante como None
+        super().__init__()  
+        self._ocupante = None 
 
     def empty(self):
         self._ocupante = None

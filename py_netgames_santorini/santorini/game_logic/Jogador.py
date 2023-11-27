@@ -9,15 +9,13 @@ class Jogador:
         self._nome = ''
 
     def initialize(self, aName, aSymbol):
-        self._simbolo = aSymbol	#int
-        self._nome = aName		#string
+        self._simbolo = aSymbol
+        self._nome = aName
         for construtor in self._construtores:
             construtor.set_simbolo(aSymbol)
-            print(construtor.get_simbolo())
-            print(construtor.get_coordenada_xyz())
-        self._turno = False		#bool
-        self._vencedor = False		#bool
-        self._perdedor = False		#bool
+        self._turno = False
+        self._vencedor = False
+        self._perdedor = False
   
     def habilitar(self):
         self._turno = True
@@ -31,8 +29,6 @@ class Jogador:
         self._turno = False
         for construtor in self._construtores:
             construtor.set_coordenada_xyz([-1, -1, -1])
-            print(construtor.get_simbolo())
-            print(construtor.get_coordenada_xyz())
 
     def get_vencedor(self):
         return self._vencedor
@@ -77,7 +73,6 @@ class Jogador:
         return True
 
     def get_construtor_marcado(self):
-        """Retorna o construtor marcado, se houver."""
         for construtor in self._construtores:
             if construtor.get_marcado():
                 return construtor
