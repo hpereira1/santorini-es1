@@ -193,8 +193,6 @@ class AtorJogador(PyNetgamesServerListener):
         
     def receive_match(self, partida):
         messagebox.showinfo(message='Partida iniciada') 
-        print('********** ORDEM: ', partida.position)
-        print('********** match_id: ', partida.match_id)
         self.set_partida_id(partida.match_id)
         if (partida.position == 1):
             self.habilitar_interface()
